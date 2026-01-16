@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UPI Payment - Bharat Billing Pro</title>
+  <style>
+    body { font-family: system-ui, sans-serif; text-align:center; background:#f8f9fa; padding:20px; }
+    h1 { color:#28a745; }
+    #qr-code-container { margin:30px auto; width:280px; height:280px; border:2px solid #28a745; border-radius:12px; overflow:hidden; }
+    .info { margin:20px; font-size:1.1rem; color:#333; }
+    .upi-box { background:#fff; padding:15px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.1); max-width:400px; margin:20px auto; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+  <h1>Scan & Pay</h1>
+
+  <div class="upi-box">
+    <div id="qr-code-container"></div>
+
+    <div class="info">
+      <strong>₹<span id="amount">0.00</span></strong><br>
+      <p>UPI ID: <span id="upiId">yourupi@upi</span></p>
+      <p>Name: <span id="upiName">Bharat Store</span></p>
+      <p>Bank: Default</p>
+    </div>
+  </div>
+
+  <script>
+    // URL-la irundhu amount eduthuko
+    const urlParams = new URLSearchParams(window.location.search);
+    const amt = urlParams.get('amt') || '0.00';
+    document.getElementById('amount').innerText = amt;
+
+    // Shop details (localStorage-la irundha eduthuko, illana default)
+    const shop = JSON.parse(localStorage.getItem("bharat_shop_details") || "{}");
+    const upiId = shop.upiId || "yourupi@upi";
+    const upiName = shop.shopName || "Bharat Store";
+
+    document.getElementById('upiId').innerText = upiId;
+    document.getElementById('upiName').innerText = upiName;
+
+    // Dynamic UPI link
+    const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${amt}&cu=INR&tn=Bill Payment`;
+
+    // QR code generate
+    new QRCode(document.getElementById("qr-code-container"), {
+      text: upiLink,
+      width: 280,
+      height: 280,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  </script>
+
+</body>
+</html>

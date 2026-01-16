@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manage UPI - Bharat Billing</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .manage-container { padding: 20px; max-width: 600px; margin: 0 auto; }
+    .bank-list { margin: 20px 0; }
+    .bank-item { padding: 10px; border: 1px solid #ddd; margin-bottom: 10px; border-radius: 5px; }
+    .bank-item button { float: right; background: red; color: white; border: none; padding: 5px 10px; }
+    #addForm { margin-top: 20px; }
+    input { margin-bottom: 10px; width: 100%; padding: 10px; }
+  </style>
+   <!-- ⭐ YEVALO IMPORTANT - IDHU 5 LINE FULL PROJECT KU WORK AAGUM ⭐ -->
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <link rel="shortcut icon" href="favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="logo192.png" />
+  <link rel="manifest" href="manifest.json" />
+  <!-- Loader Styles -->
+<style>
+  #bharatLoader {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #fff3e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 9999;
+    transition: opacity 1.2s ease-out;
+    opacity: 1;
+    color: white;
+    font-family: system-ui, sans-serif;
+  }
+
+  #bharatLoader .logo-container {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin-bottom: 35px;
+  }
+
+  #bharatLoader img.logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 50%;
+    box-shadow: 0 8px 35px rgba(0,0,0,0.4);
+    animation: pulse 2.8s infinite ease-in-out;
+  }
+
+  #bharatLoader h1 {
+    font-size: 50px;
+    margin: 0 0 12px 0;
+    color: #1e6b2d;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+  }
+
+  #bharatLoader p {
+    font-size: 24px;
+    margin: 8px 0 0 0;
+    opacity: 0.95;
+    font-weight: 500;
+    color: #d84315;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.12); opacity: 0.92; }
+  }
+</style>
+</head>
+<body>
+  <div id="bharatLoader">
+  <div class="logo-container">
+    <img src="favicon.png" alt="Bharat Billing Pro Logo" class="logo">
+  </div>
+  
+  <h1>Bharat Billing Pro</h1>
+  <p>Loading buddy, wait a moment... 🚀</p>
+</div>
+  <div class="manage-container">
+    <h1>Manage UPI Banks</h1>
+    <p>Add or delete bank accounts. QR upload optional.</p>
+    
+    <div class="bank-list" id="bankList"></div>
+    
+    <div id="addForm">
+      <input type="text" id="bankName" placeholder="Bank Name (e.g., SBI)" />
+      <input type="text" id="upiId" placeholder="UPI ID (e.g., yourname@oksbi)" />
+      <input type="text" id="ownerName" placeholder="Owner Name (e.g., Bharat Store)" />
+      <input type="file" id="qrFile" accept="image/*" />
+      <button onclick="addBank()" class="btn-green">Add Bank</button>
+    </div>
+    
+    <!-- Replace the old back button with this one -->
+<button onclick="window.location.href='index.html'" 
+        style="margin-top:20px; padding:12px 20px; background:#00b248; color:white; border:none; border-radius:8px; font-size:16px; font-weight:bold;">
+  ← Back to Billing
+</button>
+
+  <script>
+    let banks = JSON.parse(localStorage.getItem("upiBanks")) || [];
+    
+    function renderBanks() {
+      let html = "";
+      banks.forEach((bank, i) => {
+        html += `<div class="bank-item">
+          <strong>${bank.bankName}</strong><br>
+          UPI: ${bank.upiId}<br>
+          Name: ${bank.ownerName}<br>
+          QR: ${bank.qrImage ? 'Set' : 'Not Set'}
+          <button onclick="deleteBank(${i})">Delete</button>
+        </div>`;
+      });
+      document.getElementById("bankList").innerHTML = html || "<p>No banks added yet.</p>";
+    }
+    
+    function addBank() {
+      let bankName = document.getElementById("bankName").value.trim();
+      let upiId = document.getElementById("upiId").value.trim();
+      let ownerName = document.getElementById("ownerName").value.trim();
+      let qrFile = document.getElementById("qrFile").files[0];
+      
+      if (!bankName || !upiId || !ownerName) {
+        alert("Fill all fields da!");
+        return;
+      }
+      
+      let bank = { bankName, upiId, ownerName, qrImage: null };
+      
+      if (qrFile) {
+        let reader = new FileReader();
+        reader.onload = () => {
+          bank.qrImage = reader.result;
+          saveAndRender(bank);
+        };
+        reader.readAsDataURL(qrFile);
+      } else {
+        saveAndRender(bank);
+      }
+    }
+    
+    function saveAndRender(bank) {
+      banks.push(bank);
+      localStorage.setItem("upiBanks", JSON.stringify(banks));
+      renderBanks();
+      clearForm();
+    }
+    
+    function clearForm() {
+      document.getElementById("bankName").value = "";
+      document.getElementById("upiId").value = "";
+      document.getElementById("ownerName").value = "";
+      document.getElementById("qrFile").value = "";
+    }
+    
+    function deleteBank(index) {
+      if (confirm("Delete this bank?")) {
+        banks.splice(index, 1);
+        localStorage.setItem("upiBanks", JSON.stringify(banks));
+        renderBanks();
+      }
+    }
+    
+    renderBanks();
+  </script>
+  <!-- LOADER JS -->
+<script>
+  window.addEventListener("load", () => {
+    const loader = document.getElementById("bharatLoader");
+    if (!loader) return;
+    setTimeout(() => {
+      loader.style.opacity = "0";
+      setTimeout(() => {
+        if (loader && loader.parentNode) {
+          loader.parentNode.removeChild(loader);
+        }
+      }, 1300);
+    }, 1800);
+  });
+
+  setTimeout(() => {
+    const loader = document.getElementById("bharatLoader");
+    if (loader && loader.parentNode) {
+      loader.style.opacity = "0";
+      setTimeout(() => {
+        if (loader.parentNode) loader.parentNode.removeChild(loader);
+      }, 1000);
+    }
+  }, 6000);
+</script>
+</body>
+</html>
