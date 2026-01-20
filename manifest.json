@@ -9,7 +9,7 @@
   "icons": [
   { "src": "logo192.png", "sizes": "192x192", "type": "image/png" },
   { "src": "logo512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-  { "src": "logo512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }],
+  { "src": "logo512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }],
   "screenshots": [
   { "src": "screenshot-desktop1.png", "sizes": "1280x800", "type": "image/png" },
   { "src": "screenshot-mobile1.png", "sizes": "750x1334", "type": "image/png" }, 
@@ -19,4 +19,5 @@
 "categories": ["business", "finance", "productivity"]
 
 }
+
 
